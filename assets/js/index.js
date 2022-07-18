@@ -27,7 +27,7 @@ function renderTable () {
 
     setInterval((row, desctd) => {
       const timeslot = hourToCurrentTime(row.querySelector('#hourtd').textContent)
-      const now = hourToCurrentTime('11AM')
+      const now = dayjs()
 
       if (now.isAfter(timeslot, 'hour')) {
         desctd.className = 'description past'
