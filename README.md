@@ -8,4 +8,5 @@ This is a simple client side application that helps you schedule your work day. 
 
 Pressing the save button will save your agenda to local storage, so that you can revisit the page and recheck your schedule.
 
+[Check YOUR schedule](https://udidifier.github.io/workday-scheduler/)
 ![App](https://raw.githubusercontent.com/udidifier/workday-scheduler/main/images/app.png)
