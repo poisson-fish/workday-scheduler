@@ -6,7 +6,7 @@ function renderTable () {
   // I used day.js because smaller and faster
   const start = hourToCurrentTime('9AM')
   const times = Array.from(
-    Array(8).keys())
+    Array(9).keys())
     .map(timeDifference => start.add(timeDifference, 'hour'))
 
   times.forEach((time) => {
