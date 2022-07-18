@@ -1,77 +1,65 @@
-const timeBlocksTable = document.querySelector('#timeblocks-table');
-const timeBlocks_Data = [];
+/* eslint-disable no-undef */
+const timeBlocksTable = document.querySelector('#timeblocks-table')
+const hourToCurrentTime = (hr) => dayjs(hr, 'hA')
 
-const hourToCurrentTime = (hr) => dayjs(hr,'hA')
+function renderTable () {
+  // I used day.js because smaller and faster
+  const start = hourToCurrentTime('9AM')
+  const times = Array.from(
+    Array(8).keys())
+    .map(timeDifference => start.add(timeDifference, 'hour'))
 
-function renderTable() {
+  times.forEach((time) => {
+    const row = document.createElement('tr')
+    row.className = 'row'
+    timeBlocksTable.appendChild(row)
 
-    //I used day.js because smaller and faster
-    const start = hourToCurrentTime('9AM');
-    const times = Array.from(
-                    Array(8).keys())
-                    .map(time_difference => start.add(time_difference, 'hour'));
+    const hour = document.createElement('td')
+    const description = document.createElement('td')
+    const button = document.createElement('td')
 
-    const elements = times.forEach((time) => {
+    const hourtd = row.appendChild(hour)
+    hourtd.className = 'hour'
+    hourtd.id = 'hourtd'
+    hourtd.textContent = time.format('hA')
 
-        const row = document.createElement('tr');
-        row.className = "row";
-        timeBlocksTable.appendChild(row);
+    const desctd = row.appendChild(description)
 
-        const hour = document.createElement('td');
-        const description = document.createElement('td');
-        const button = document.createElement('td');
+    setInterval((row, desctd) => {
+      const timeslot = hourToCurrentTime(row.querySelector('#hourtd').textContent)
+      const now = hourToCurrentTime('11AM')
 
-        const hourtd = row.appendChild(hour);
-        hourtd.className = 'hour';
-        hourtd.id = 'hourtd';
-        hourtd.textContent = time.format('hA');
+      if (now.isAfter(timeslot, 'hour')) {
+        desctd.className = 'description past'
+      } else if (now.isSame(timeslot, 'hour')) {
+        desctd.className = 'description present'
+      } else if (now.isBefore(timeslot, 'hour')) {
+        desctd.className = 'description future'
+      }
+    }, 500, row, desctd)
 
-        const desctd = row.appendChild(description);
+    desctd.className = 'description'
 
-        setInterval((row,desctd) => {
-            const timeslot = hourToCurrentTime(row.querySelector('#hourtd').textContent);
-            const now = hourToCurrentTime('11AM');
+    const textArea = document.createElement('textarea')
+    textArea.className = 'textarea'
+    textArea.id = 'descta'
+    // Try to load it from localStorage
+    textArea.value = localStorage.getItem(hourtd.textContent)
+    desctd.appendChild(textArea)
 
-            if(now.isAfter(timeslot,'hour')){
-                desctd.className = "description past";
-            }
-            else if(now.isSame(timeslot,'hour')){
-                desctd.className = "description present";
-            }
-            else if(now.isBefore(timeslot,'hour')) {
-                desctd.className = "description future";
-            }
-        },500,row,desctd);
+    const buttontd = row.appendChild(button)
+    buttontd.className = 'button'
 
-        desctd.className = 'description';
-
-        const textArea = document.createElement('textarea');
-        textArea.className = "textarea";
-        textArea.id = 'descta';
-        //Try to load it from localStorage
-        textArea.value = localStorage.getItem(hourtd.textContent);
-        desctd.appendChild(textArea);
-
-
-        const buttontd = row.appendChild(button);
-        buttontd.className = 'button';
-
-        const buttonb = document.createElement('button');
-        buttonb.onclick = (e) => {
-            const row = e.target.parentElement.parentElement;
-            const timeslot = row.querySelector('#hourtd').textContent;
-            const description = row.querySelector('#descta').value;
-            localStorage.setItem(timeslot, description);
-        }
-        buttonb.className = 'saveBtn';
-        buttonb.textContent = '💾';
-        buttontd.appendChild(buttonb);
-    });
-    console.log(times);
-    //for(var i = 0; i<=8; i++){
-    //    var time_slot = start.add(1,'hour');
-    //}
-
-
+    const buttonb = document.createElement('button')
+    buttonb.onclick = (e) => {
+      const row = e.target.parentElement.parentElement
+      const timeslot = row.querySelector('#hourtd').textContent
+      const description = row.querySelector('#descta').value
+      localStorage.setItem(timeslot, description)
+    }
+    buttonb.className = 'saveBtn'
+    buttonb.textContent = '💾'
+    buttontd.appendChild(buttonb)
+  })
 }
-renderTable();
+renderTable()
